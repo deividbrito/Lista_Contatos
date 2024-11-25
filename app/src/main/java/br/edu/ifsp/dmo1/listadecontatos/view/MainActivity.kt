@@ -71,15 +71,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             handleNewContactDialog()
         }
     }
+    //alteração de organização para lista em ordem crescente
     private fun configListview() {
-        listDatasource.addAll(ContactDao.findAll())
+        listDatasource.addAll(ContactDao.findAll().sortedBy { it.name })
         adapter = ListContactAdapter(this, listDatasource)
         binding.listviewContacts.adapter = adapter
         binding.listviewContacts.onItemClickListener = this
     }
-    private fun updateListDatasoruce() {
+    private fun updateListDatasource() {
         listDatasource.clear()
-        listDatasource.addAll(ContactDao.findAll())
+        listDatasource.addAll(ContactDao.findAll().sortedBy { it.name })
         adapter.notifyDataSetChanged()
     }
     private fun handleNewContactDialog() {
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                             bindingDialog.edittextPhone.text.toString()
                         )
                     )
-                    updateListDatasoruce()
+                    updateListDatasource()
                     dialog.dismiss()
                 })
                 .setNegativeButton(
@@ -109,5 +110,3 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         builderDialog.create().show()
     }
 }
-
-

@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "br.edu.ifsp.dmo1.listadecontatos"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "br.edu.ifsp.dmo1.listadecontatos"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.dmo1.listadecontatos.R
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: ListContactAdapter
     private val listDatasource = ArrayList<Contact>()
+
+    private val contactViewModel: ContactViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -71,16 +75,17 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             handleNewContactDialog()
         }
     }
+    //alteração para viewmodel
     //alteração de organização para lista em ordem crescente
     private fun configListview() {
         listDatasource.addAll(ContactDao.findAll().sortedBy { it.name })
-        adapter = ListContactAdapter(this, listDatasource)
+        adapter = ListContactAdapter(this, contactViewModel.contactList)
         binding.listviewContacts.adapter = adapter
         binding.listviewContacts.onItemClickListener = this
     }
     private fun updateListDatasource() {
-        listDatasource.clear()
-        listDatasource.addAll(ContactDao.findAll().sortedBy { it.name })
+        contactViewModel.contactList.clear()
+        contactViewModel.contactList.addAll(ContactDao.findAll().sortedBy { it.name })
         adapter.notifyDataSetChanged()
     }
     private fun handleNewContactDialog() {
@@ -93,6 +98,13 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                 DialogInterface.OnClickListener { dialog, which ->
                     Log.v(TAG, "Salvar contato")
                     ContactDao.insert(
+                        Contact(
+                            bindingDialog.edittextName.text.toString(),
+                            bindingDialog.edittextPhone.text.toString()
+                        )
+                    )
+                    //adicionar o novo contato diretamente no ViewModel
+                    contactViewModel.contactList.add(
                         Contact(
                             bindingDialog.edittextName.text.toString(),
                             bindingDialog.edittextPhone.text.toString()
